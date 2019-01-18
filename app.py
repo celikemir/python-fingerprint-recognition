@@ -2,11 +2,21 @@ import cv2
 import os
 import sys
 import numpy
+import argparse
 import matplotlib.pyplot as plt
 from enhance import image_enhance
 from skimage.morphology import skeletonize, thin
 
-os.chdir("C:\Users\kjanko\Desktop\python-fingerprint-recognition")
+#for linux users change like /home/username/path_of_files
+os.chdir('/home/emir/Desktop/python-fingerprint-recognition-master')
+
+# you can give your image path using terminal.
+ap = argparse.ArgumentParser()
+ap.add_argument("-i", "--image1", required = True, help = "Path to the image")
+ap.add_argument("-i", "--image2", required = True, help = "Path to the image")
+args = vars(ap.parse_args())
+
+
 
 def removedot(invertThin):
     temp0 = numpy.array(invertThin[:])
@@ -71,12 +81,12 @@ def get_descriptors(img):
 
 
 def main():
-	image_name = sys.argv[1]
-	img1 = cv2.imread("database/" + image_name, cv2.IMREAD_GRAYSCALE)
+	#image_name = sys.argv[1]
+	img1 = cv2.imread("database/" + args["image1"], cv2.IMREAD_GRAYSCALE)# I changed image_name to args["image1"] its allow to use commandline much easily.
 	kp1, des1 = get_descriptors(img1)
 	
-	image_name = sys.argv[2]
-	img2 = cv2.imread("database/" + image_name, cv2.IMREAD_GRAYSCALE)
+	#image_name = sys.argv[2]
+	img2 = cv2.imread("database/" + args["image2"], cv2.IMREAD_GRAYSCALE)
 	kp2, des2 = get_descriptors(img2)
 	
 	# Matching between descriptors
