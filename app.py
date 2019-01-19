@@ -1,12 +1,24 @@
+# usage  python app.py --first 1.tif --second 2.tif
 import cv2
 import os
 import sys
 import numpy
+import argparse
 import matplotlib.pyplot as plt
 from enhance import image_enhance
 from skimage.morphology import skeletonize, thin
 
-os.chdir("C:\Users\kjanko\Desktop\python-fingerprint-recognition")
+os.chdir('/home/emir/İndirilenler/python-fingerprint-recognition-master')
+
+
+ap = argparse.ArgumentParser()
+ap.add_argument("-i", "--first", required=True,
+	help="path to the input image")
+ap.add_argument("-w", "--second", required=True,
+	help="path to the input image")
+args = vars(ap.parse_args())
+
+
 
 def removedot(invertThin):
     temp0 = numpy.array(invertThin[:])
@@ -40,7 +52,7 @@ def removedot(invertThin):
 
 
 def get_descriptors(img):
- 	clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+	clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
 	img = clahe.apply(img)
 	img = image_enhance.image_enhance(img)
 	img = numpy.array(img, dtype=numpy.uint8)
@@ -72,11 +84,11 @@ def get_descriptors(img):
 
 def main():
 	image_name = sys.argv[1]
-	img1 = cv2.imread("database/" + image_name, cv2.IMREAD_GRAYSCALE)
+	img1 = cv2.imread("database/" + args["first"], cv2.IMREAD_GRAYSCALE)
 	kp1, des1 = get_descriptors(img1)
 	
 	image_name = sys.argv[2]
-	img2 = cv2.imread("database/" + image_name, cv2.IMREAD_GRAYSCALE)
+	img2 = cv2.imread("database/" + args["second"], cv2.IMREAD_GRAYSCALE)
 	kp2, des2 = get_descriptors(img2)
 	
 	# Matching between descriptors
